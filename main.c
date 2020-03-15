@@ -285,7 +285,7 @@ void play_sound(const char *path, float volume) {
   }
 
   if (!s) {
-    arrput(sounds, MAKE(Sound));
+    arrput(sounds, (Sound) {0});
     s = &arrlast(sounds);
     s->name = str_copy(path);
     s->buffer = load_audio_buffer(path);

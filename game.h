@@ -6,12 +6,6 @@
 #include "loader.h"
 #include "font.h"
 
-#ifdef __cplusplus
-#define MAKE(T) (T{})
-#else
-#define MAKE(T) ((T){0})
-#endif
-
 #define GAME_WIDTH 320
 #define GAME_HEIGHT 180
 #define GAME_SCALE 4
