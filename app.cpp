@@ -1,7 +1,5 @@
 #include "core.h"
 
-#define NEW(T) ((T *)calloc(1, sizeof(T)))
-
 static bool keys_down[KEY_MAX_];
 static bool keys_delta[KEY_MAX_];
 static bool quit_flag;

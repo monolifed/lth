@@ -5,12 +5,12 @@
 
 char *str_copy(const char *str) {
   size_t size = strlen(str);
-  char *buf = (char *)malloc(size + 1);
+  char *buf = malloc(size + 1);
   memcpy(buf, str, size+1);
   return buf;
 }
 char *str_copy_part(const char *str, size_t size) {
-  char *buf = (char *)malloc(size + 1);
+  char *buf = malloc(size + 1);
   memcpy(buf, str, size);
   buf[size] = 0;
   return buf;
@@ -36,7 +36,7 @@ char *mprintf(const char *fmt, ...) {
   va_end( arg_ptr );
 
   va_start( arg_ptr, fmt );
-  char *buffer = (char *)malloc(buffer_size + 1);
+  char *buffer = malloc(buffer_size + 1);
   vsnprintf(buffer, buffer_size + 1, fmt, arg_ptr);
   buffer[buffer_size] = 0;
   va_end( arg_ptr );

@@ -2886,7 +2886,7 @@ void change_scene(void (*proc)(World *world)) {
     world_delete(world);
   }
 
-  world = NEW(World);
+  world = calloc(1, sizeof *world);
   set3f(&world->ambient, 1.f, 1.f, 1.f);
   if (proc) {
     proc(world);
@@ -3181,7 +3181,7 @@ static void frame(void) {
 }
 
 Entity *make_entity(int type) {
-  Entity *en = NEW(Entity);
+  Entity *en = calloc(1, sizeof *en);
   en->width = 10;
   en->height = 10;
   en->type = type;

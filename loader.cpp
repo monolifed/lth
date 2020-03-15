@@ -37,7 +37,7 @@ void init_loader(void) {
       continue;
 
     int path_length = mz_zip_reader_get_filename(zip, i, NULL, 0);
-    char *buf = (char *)malloc(path_length + 1);
+    char *buf = malloc(path_length + 1);
     mz_zip_reader_get_filename(zip, i, buf, path_length+1);
     for (char *c = buf; *c; c++)
       if (*c == '\\')
@@ -59,7 +59,7 @@ static char *load_zipped_file(const char *path, int *size) {
     Zipped_File *file = &zip_files_[i];
     if (str_eq(path, file->path)) {
 
-      char *buffer = (char *)malloc(file->size + 1);
+      char *buffer = malloc(file->size + 1);
       mz_zip_reader_extract_to_mem(&zip_, file->index, buffer, file->size, 0);
       buffer[file->size] = 0;
 
@@ -85,7 +85,7 @@ char *load_file(const char *path, int *size) {
   size_t tell_size = ftell(f);
   fseek(f, 0, SEEK_SET);
 
-  char *buffer = (char *)malloc(tell_size+1);
+  char *buffer = malloc(tell_size + 1);
   fread(buffer, 1, tell_size, f);
   buffer[tell_size] = 0;
 
@@ -132,7 +132,7 @@ Sprite *load_sprite(const char *path) {
 
   struct json_value_s *json = json_parse(data, size);
   if (json) {
-    sprite = (Sprite *)calloc(1, sizeof(Sprite));
+    sprite = calloc(1, sizeof *sprite);
 
     struct json_object_s *json_obj = json_as_object(json);
     struct json_object_s *meta = json_as_object(json_get(json_obj, "meta"));
@@ -200,7 +200,7 @@ struct Font *load_image_font(const char *path, const char *characters, int spaci
       return NULL;
     }
     free(data);
-    font = (Font *)calloc(1, sizeof(Font));
+    font = calloc(1, sizeof *font);
     font_load_image(font, pixels, w, h, characters, spacing);
     free(pixels);
   }

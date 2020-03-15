@@ -1,7 +1,5 @@
 #include "core.h"
 
-#define NEW(T) ((T *)calloc(1, sizeof(T)))
-
 //==================== Matrix math ======================
 static void matrix_identity(float t[16]) {
   t[0]  = 1; t[1]  = 0; t[2]  = 0; t[3]  = 0;
@@ -434,8 +432,8 @@ static Texture gfx_make_texture_impl(const void *data, int width, int height) {
 
 Texture *gfx_make_texture(const void *data, int width, int height) {
   Texture t = gfx_make_texture_impl(data, width, height);
-  Texture *result = NEW(Texture);
-  *result = t;
+  Texture *result = calloc(1, sizeof t);
+  memcpy(result, &t, sizeof t);
   return result;
 }
 
@@ -455,9 +453,9 @@ static GLuint gfx_make_gl_shader(GLenum type, const char *src, int size) {
   if (!status) {
     GLint length = 0;
     glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length);
-    char *buffer = (char *)malloc(length+1);
+    char buffer[length + 1];
     GLsizei out_size = 0;
-    glGetShaderInfoLog(handle, length+1, &out_size, buffer);
+    glGetShaderInfoLog(handle, sizeof buffer, &out_size, buffer);
     printf("Failed to compile shader:\n%s\n", buffer);
     printf("%.*s\n", size, src);
     glDeleteShader(handle);
@@ -487,9 +485,9 @@ static Shader *gfx_make_shader_impl(const char *vs_src, int vs_size, const char 
       if (!status) {
         GLint length = 0;
         glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length);
-        char *buffer = (char *)malloc(length+1);
+        char buffer[length + 1];
         GLsizei out_size = 0;
-        glGetProgramInfoLog(handle, length+1, &out_size, buffer);
+        glGetProgramInfoLog(handle, sizeof buffer, &out_size, buffer);
         printf("%s\n", buffer);
         glDeleteProgram(handle);
         handle = 0;
@@ -500,7 +498,7 @@ static Shader *gfx_make_shader_impl(const char *vs_src, int vs_size, const char 
   if (vs) glDeleteShader(vs);
   if (ps) glDeleteShader(ps);
 
-  Shader *s = NEW(Shader);
+  Shader *s = calloc(1, sizeof *s);
   s->handle = handle;
   return s;
 }
@@ -701,8 +699,8 @@ void gfx_imm_vertex(float x, float y, float u, float v, uint32_t color) {
     imm_cpu_capacity = imm_cpu_capacity ? 
         imm_cpu_capacity * 2 : 1024;
 
-    imm_cpu_buf = (Vertex *)realloc(imm_cpu_buf,
-        imm_cpu_capacity * sizeof(imm_cpu_buf[0]));
+    imm_cpu_buf = realloc(imm_cpu_buf,
+        imm_cpu_capacity * sizeof *imm_cpu_buf);
   }
 
   imm_cpu_buf[imm_cpu_size++] = vertex;
@@ -757,7 +755,7 @@ Canvas *gfx_make_canvas(int width, int height) {
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)t.handle, 0);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  Canvas *c = NEW(Canvas);
+  Canvas *c = calloc(1, sizeof *c);
   c->handle = handle;
   c->texture = t;
   c->width = width;

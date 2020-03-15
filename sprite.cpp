@@ -1,3 +1,4 @@
+#include "core.h"
 #include "sprite.h"
 #include "stb/stb_ds.h"
 
@@ -142,8 +143,7 @@ void sprite_add_frame(Sprite *sprite, float quad[4], float duration) {
 
 void sprite_add_anim(Sprite *sprite, const char *name, int from, int to) {
   Anim anim = {0};
-  anim.name = (char *)malloc(strlen(name)+1);
-  memcpy(anim.name, name, strlen(name)+1);
+  anim.name = str_copy(name);
   anim.from = from;
   anim.to = to;
   for (int i = from; i <= to && arrlen(sprite->frames)-1; i++)

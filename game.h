@@ -6,7 +6,6 @@
 #include "loader.h"
 #include "font.h"
 
-#define NEW(T) ((T *)calloc(1,sizeof(T)))
 #ifdef __cplusplus
 #define MAKE(T) (T{})
 #else
