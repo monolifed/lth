@@ -15,5 +15,5 @@ clean:
 LastTrain: $(OBJS)
 	$(CC) $(CFLAGS) -o LastTrain $(OBJS) $(LIBS)
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -x c -c -o $@ $<
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
