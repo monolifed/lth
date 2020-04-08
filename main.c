@@ -3203,6 +3203,7 @@ int WINAPI WinMain(
 #endif
 {
   App_Config c = {0};
+  c.title = "LAST TRAIN HOME";
   c.width = GAME_WIDTH * GAME_SCALE;
   c.height = GAME_HEIGHT * GAME_SCALE;
   c.step = frame;
