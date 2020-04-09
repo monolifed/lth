@@ -1,3 +1,5 @@
-*.o
-LastTrain
-data.bin
+obj/*.o
+build/*.dll
+build/LastTrain
+build/LastTrain.exe
+build/data.bin

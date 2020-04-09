@@ -72,13 +72,12 @@ static char *load_zipped_file(const char *path, int *size) {
 }
 
 char *load_file(const char *path, int *size) {
-  if (use_zip_) {
-    return load_zipped_file(path, size);
-  }
-
   FILE *f = fopen(path, "rb");
   if (!f) {
-    return 0;
+      if (use_zip_) {
+        return load_zipped_file(path, size);
+      }
+      return 0;
   }
 
   fseek(f, 0, SEEK_END);

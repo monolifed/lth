@@ -30,14 +30,14 @@ void load_lighting(void) {
   if (!source)
     return;
 
-#ifdef _WIN32
-  {
-    char *old_source = source;
-    source = mprintf("#version 130\n%s\n", old_source);
-    size = strlen(source);
-    free(old_source);
-  }
-#endif
+//#ifdef _WIN32
+//  {
+//    char *old_source = source;
+//    source = mprintf("#version 130\n%s\n", old_source);
+//    size = strlen(source);
+//    free(old_source);
+//  }
+//#endif
   shader = gfx_make_shader(source, size);
   free(source);
 }

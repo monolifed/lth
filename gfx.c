@@ -71,197 +71,7 @@ static float *get_projection(float *t, int is_upright, int width, int height) {
   return t;
 }
 
-#ifdef _WIN32
-
-#include <windows.h>
-#include <GL/gl.h>
-
-#ifdef _WIN64
-typedef signed   long long int khronos_intptr_t;
-typedef signed   long long int khronos_ssize_t;
-#else
-typedef signed   long  int     khronos_intptr_t;
-typedef signed   long  int     khronos_ssize_t;
-#endif
-typedef khronos_ssize_t GLsizeiptr;
-typedef khronos_intptr_t GLintptr;
-typedef char GLchar;
-
-#define GL_FRAMEBUFFER                    0x8D40
-#define GL_ARRAY_BUFFER                   0x8892
-#define GL_DYNAMIC_DRAW                   0x88E8
-#define GL_COMPILE_STATUS                 0x8B81
-#define GL_INFO_LOG_LENGTH                0x8B84
-#define GL_LINK_STATUS                    0x8B82
-#define GL_TEXTURE0                       0x84C0
-#define GL_VERTEX_SHADER                  0x8B31
-#define GL_FRAGMENT_SHADER                0x8B30
-#define GL_ACTIVE_UNIFORMS                0x8B86
-#define GL_ACTIVE_UNIFORM_MAX_LENGTH      0x8B87
-#define GL_FLOAT_VEC2                     0x8B50
-#define GL_FLOAT_VEC4                     0x8B52
-#define GL_FLOAT_MAT4                     0x8B5C
-#define GL_SAMPLER_2D                     0x8B5E
-#define GL_CLAMP_TO_EDGE                  0x812F
-#define GL_COLOR_ATTACHMENT0              0x8CE0
-#define GL_DEBUG_OUTPUT                   0x92E0
-#define GL_DEBUG_OUTPUT_SYNCHRONOUS       0x8242
-#define GL_DEBUG_SEVERITY_NOTIFICATION    0x826B
-
-static void (APIENTRY *glBlendFuncSeparate)(GLenum srcRGB,
-   GLenum dstRGB,
-   GLenum srcAlpha,
-   GLenum dstAlpha);
-static void (APIENTRY *glBindFramebuffer)(GLenum target,
-   GLuint framebuffer);
-static void (APIENTRY *glGenBuffers)(GLsizei n,
-   GLuint * buffers);
-static void (APIENTRY *glBindBuffer)(GLenum target,
-   GLuint buffer);
-static void (APIENTRY *glBufferData)(GLenum target,
-   GLsizeiptr size,
-   const GLvoid * data,
-   GLenum usage);
-static void (APIENTRY *glBufferSubData)(GLenum target,
-   GLintptr offset,
-   GLsizeiptr size,
-   const GLvoid * data);
-static void (APIENTRY *glUseProgram)(GLuint program);
-static void (APIENTRY *glVertexAttribPointer)(GLuint index,
-   GLint size,
-   GLenum type,
-   GLboolean normalized,
-   GLsizei stride,
-   const GLvoid * pointer);
-static GLuint (APIENTRY *glCreateShader)(GLenum shaderType);
-static void (APIENTRY *glShaderSource)(GLuint shader,
-   GLsizei count,
-   const GLchar **string,
-   const GLint *length);
-static void (APIENTRY *glCompileShader)(GLuint shader);
-static void (APIENTRY *glGetShaderiv)(GLuint shader,
-   GLenum pname,
-   GLint *params);
-static void (APIENTRY *glGetShaderInfoLog)(GLuint shader,
-   GLsizei maxLength,
-   GLsizei *length,
-   GLchar *infoLog);
-static void (APIENTRY *glDeleteShader)(GLuint shader);
-static void (APIENTRY *glEnableVertexAttribArray)(GLuint index);
-static void (APIENTRY *glActiveTexture)(GLenum texture);
-static GLuint (APIENTRY *glCreateProgram)(void);
-static void (APIENTRY *glAttachShader)(GLuint program,
-   GLuint shader);
-static void (APIENTRY *glLinkProgram)(GLuint program);
-static void (APIENTRY *glGetProgramiv)(GLuint program,
-   GLenum pname,
-   GLint *params);
-static void (APIENTRY *glGetProgramInfoLog)(GLuint program,
-   GLsizei maxLength,
-   GLsizei *length,
-   GLchar *infoLog);
-static void (APIENTRY *glDeleteProgram)(GLuint program);
-static GLint (APIENTRY *glGetAttribLocation)(GLuint program,
-   const GLchar *name);
-static void (APIENTRY *glGetActiveUniform)(GLuint program,
-   GLuint index,
-   GLsizei bufSize,
-   GLsizei *length,
-   GLint *size,
-   GLenum *type,
-   GLchar *name);
-static GLint (APIENTRY *glGetUniformLocation)(GLuint program,
-   const GLchar *name);
-static void (APIENTRY *glGenFramebuffers)(GLsizei n,
-   GLuint *ids);
-
-typedef void (APIENTRY *DEBUGPROC)(GLenum source,
-    GLenum type,
-    GLuint id,
-    GLenum severity,
-    GLsizei length,
-    const GLchar *message,
-    const void *userParam);
-static void (APIENTRY *glFramebufferTexture2D)(GLenum target,
-   GLenum attachment,
-   GLenum textarget,
-   GLuint texture,
-   GLint level);
-
-static void (APIENTRY *glUniform1fv)(GLint location, GLsizei count, const GLfloat *value);
-static void (APIENTRY *glUniform2fv)(GLint location, GLsizei count, const GLfloat *value);
-static void (APIENTRY *glUniform3fv)(GLint location, GLsizei count, const GLfloat *value);
-static void (APIENTRY *glUniform4fv)(GLint location, GLsizei count, const GLfloat *value);
-static void (APIENTRY *glUniform1i)(GLint location, GLint v0);
-static void (APIENTRY *glUniform1iv)(GLint location, GLsizei count, const GLint *value);
-//static void (APIENTRY *glUniform1uiv)(GLint location, GLsizei count, const GLuint *value);
-static void (APIENTRY *glUniformMatrix4fv)(GLint location,
-  GLsizei count,
-  GLboolean transpose,
-  const GLfloat *value);
-static void (APIENTRY *glDebugMessageCallback)(DEBUGPROC callback,
-   const void * userParam);
-
-#define load_gl_function(name) \
-  *(void **)&name = (void *)wglGetProcAddress(#name); \
-  if (!name) { \
-    printf("Failed to load GL function %s\n", #name); \
-    assert(name && "Failed to load gl function"); \
-  }
-
-static void gl_message_callback(GLenum source,
-  GLenum type,
-  GLuint id,
-  GLenum severity,
-  GLsizei length,
-  const GLchar *message,
-  const void *userParam)
-{
-  if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
-    printf("%s\n", message);
-}
-
-static void gfx_load_gl_functions(void) {
-  load_gl_function(glBlendFuncSeparate);
-  load_gl_function(glBindFramebuffer);
-  load_gl_function(glGenBuffers);
-  load_gl_function(glBindBuffer);
-  load_gl_function(glBufferData);
-  load_gl_function(glBufferSubData);
-  load_gl_function(glUseProgram);
-  load_gl_function(glCreateShader);
-  load_gl_function(glShaderSource);
-  load_gl_function(glCompileShader);
-  load_gl_function(glGetShaderiv);
-  load_gl_function(glGetShaderInfoLog);
-  load_gl_function(glVertexAttribPointer);
-  load_gl_function(glEnableVertexAttribArray);
-  load_gl_function(glDeleteShader);
-  load_gl_function(glActiveTexture);
-  load_gl_function(glAttachShader);
-  load_gl_function(glLinkProgram);
-  load_gl_function(glCreateProgram);
-  load_gl_function(glGetProgramiv);
-  load_gl_function(glGetProgramInfoLog);
-  load_gl_function(glDeleteProgram);
-  load_gl_function(glGetAttribLocation);
-  load_gl_function(glGetActiveUniform);
-  load_gl_function(glGetUniformLocation);
-  load_gl_function(glGenFramebuffers);
-  load_gl_function(glFramebufferTexture2D);
-  load_gl_function(glUniform1fv);
-  load_gl_function(glUniform2fv);
-  load_gl_function(glUniform4fv);
-  load_gl_function(glUniform1i);
-  load_gl_function(glUniformMatrix4fv);
-  load_gl_function(glDebugMessageCallback);
-  load_gl_function(glUniform3fv);
-  load_gl_function(glUniform1iv);
-  //load_gl_function(glUniform1uiv);
-}
-
-
-#elif defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__)
 #include <emscripten/html5.h>
 #include <emscripten/emscripten.h>
 #include <GLES2/gl2.h>
@@ -269,10 +79,14 @@ static void gfx_load_gl_functions(void) {
 
 static void gfx_load_gl_functions(void) {}
 
-#elif defined(USE_GLFW3)
+#else
 
 #define GLFW_INCLUDE_GLEXT
 #include <GLFW/glfw3.h>
+
+// Note:
+#define REG_GLXT_WIN32 \
+GLXT(PFNGLACTIVETEXTUREPROC,glActiveTexture) \
 
 #define REG_GLXT \
 GLXT(PFNGLBLENDFUNCSEPARATEPROC,glBlendFuncSeparate) \
@@ -312,6 +126,10 @@ GLXT(PFNGLUNIFORM1IVPROC,glUniform1iv)
 
 
 #define GLXT(type, name) type name = NULL;
+#ifdef _WIN32
+REG_GLXT_WIN32
+#endif
+
 REG_GLXT
 #undef GLXT
 
@@ -342,6 +160,10 @@ GLFWglproc gl_get_ext(const char *procname)
 static void gfx_load_gl_functions(void)
 {
 #define GLXT(type, name) name = (type) gl_get_ext(#name);
+	#ifdef _WIN32
+	REG_GLXT_WIN32
+	#endif
+	
 	REG_GLXT
 #undef GLXT
 }
@@ -505,11 +327,9 @@ static Shader *gfx_make_shader_impl(const char *vs_src, int vs_size, const char 
 
 Shader *gfx_make_shader(const char *src, size_t size) {
   const char vs[] = 
-#ifdef _WIN32
-    "#version 130\n"
-#endif
-    "precision highp float;"
-    ""
+    "#ifdef GL_ES\n"
+    "precision highp float;\n"
+    "#endif\n"
     "attribute vec2 vs_pos;"
     "attribute vec2 vs_uv;"
     "attribute vec4 vs_color;"
@@ -800,10 +620,9 @@ void gfx_load(void) {
   matrix_identity(mat_stack[0].data);
 
   const char ps[] =
-#ifdef _WIN32
-    "#version 130\n"
-#endif
-    "precision highp float;"
+    "#ifdef GL_ES\n"
+    "precision highp float;\n"
+    "#endif\n"
     "uniform sampler2D ps_texture;"
 
     "varying vec2 interp_uv;"

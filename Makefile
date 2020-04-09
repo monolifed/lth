@@ -1,34 +1,51 @@
-CFLAGS:= -Wall -Wextra -pedantic -std=c11 -O2 -DUSE_GLFW3 -D_LARGEFILE64_SOURCE=1
+CFLAGS:= -Wall -Wextra -pedantic -std=c11 -O2 -D_LARGEFILE64_SOURCE=1
 #CFLAGS= -std=c11 -O2 -DUSE_GLFW3
 
-OBJDIR:=obj/
+OBJDIR:=obj
 APPNAME:=LastTrain
-APPDIR:=build/
+APPDIR:=build
 
-LIBS:=-lglfw -lEGL -lGLESv2 -lm -lopenal
 OBJS:=app.o audio.o entity.o font.o gfx.o lighting.o \
 	loader.o main.o sprite.o str.o things.o
 
-OBJS:=$(addprefix $(OBJDIR), $(OBJS))
-APPNAME:=$(APPDIR)$(APPNAME)
+OBJS:=$(addprefix $(OBJDIR)/, $(OBJS))
+APPNAME:=$(APPDIR)/$(APPNAME)
+
+ifeq ($(OS),Windows_NT)
+	RM:=del /Q
+	APPNAME:=$(APPNAME).exe
+	CC:=gcc
+	MAKEDIR:=mkdir
+	CFLAGS:=$(CFLAGS) -I. -Llibs
+	CLEAN:=util.bat CLEAN
+	POST:=util.bat POST
+	LIBS:=-lglfw3 -lopengl32 -lopenal32 -luser32 -lgdi32 -lm
+else
+	MAKEDIR:=mkdir -p
+	CLEAN:=$(RM) $(OBJS) $(APPNAME)
+	LIBS:=-lglfw -lGL -lopenal -lm
+endif
+
+
 
 default: all
 
 all: $(APPNAME)
 
 clean:
-	$(RM) $(OBJS) $(APPNAME)
+	$(CLEAN)
 
 $(APPNAME): $(OBJS) | $(APPDIR)
 	$(CC) $(CFLAGS) -o $(APPNAME) $(OBJS) $(LIBS)
+	$(POST)
 
 $(APPDIR):
-	mkdir -p $(APPDIR)
+	$(MAKEDIR) $(APPDIR)
 
 $(OBJS): | $(OBJDIR)
 
 $(OBJDIR):
-	mkdir -p $(OBJDIR)
+	$(MAKEDIR) $(OBJDIR)
 
-$(OBJDIR)%.o: %.c
+$(OBJDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
