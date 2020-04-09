@@ -1,7 +1,7 @@
-Last Train Home Linux port https://hby.itch.io/last-train-home
+Last Train Home GLFW port https://hby.itch.io/last-train-home
 
 # Running
-* Requires: libglfw libEGL libGLESv2 libopenal
+* Requires: libglfw libGL libopenal
 * Download repository and type `make`
 * Go to `build/` directory
 * Copy `data.bin` (from the windows version of the game)
@@ -9,5 +9,5 @@ Last Train Home Linux port https://hby.itch.io/last-train-home
 * Type `./LastTrain`
 
 # License
-Public Domain (except for miniz which is MIT and openAL headers which are LGPL)  
+Public Domain (except for miniz (MIT), GLFW (Zlib), OpenAL-soft (LGPL) headers/libs)  
 https://itch.io/post/1255686
