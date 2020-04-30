@@ -159,15 +159,14 @@ void play_music(const char *path) {
     return;
 
   Audio_Source *s = load_audio_source(path);
-  if (s) {
-    Music m = {0};
-    aud_play(s);
-    m.source = s;
-    m.path = path;
-    m.volume = 1;
-    aud_set_source_looped(s, true);
-    arrput(music_list, m);
-  }
+  if (!s)
+	return;
+  
+  aud_play(s);
+  aud_set_source_looped(s, true);
+  
+  Music m = {.path = path, .source = s, .fade_out = false, .volume = 1.f};
+  arrpush(music_list, m);
 }
 
 Item *get_item(int type) {
@@ -195,7 +194,7 @@ Item *get_item(int type) {
       I.name = "Unknown";
       break;
   }
-  arrput(items, I);
+  arrpush(items, I);
   return &arrlast(items);
 }
 void take_away_item(int type) {
@@ -239,7 +238,7 @@ void notify(const char *content) {
   n.content = str_copy(content);
   n.time_left = 3;
   n.time_total = 3;
-  arrput(notifications, n);
+  arrpush(notifications, n);
 }
 void draw_notifications(void) {
   if (!speech_font)
@@ -285,7 +284,7 @@ void play_sound(const char *path, float volume) {
   }
 
   if (!s) {
-    arrput(sounds, (Sound) {0});
+    arrpush(sounds, (Sound) {0});
     s = &arrlast(sounds);
     s->name = str_copy(path);
     s->buffer = load_audio_buffer(path);
@@ -306,7 +305,7 @@ void play_sound(const char *path, float volume) {
   if (src) {
     aud_set_volume(src, volume);
     aud_play(src);
-    arrput(s->sources, src);
+    arrpush(s->sources, src);
   }
 }
 
@@ -482,7 +481,7 @@ void show_speech_for(int type, const char *content) {
 void show_speech_for_and_prompt(int type, const char *content, const char **choices, int choices_count) {
   show_speech_for(type, content);
   for (int i = 0; i < choices_count; i++) {
-    arrput(speech_choices, str_copy(choices[i]));
+    arrpush(speech_choices, str_copy(choices[i]));
   }
 }
 
@@ -1029,8 +1028,8 @@ void update_state(void) {
     case IN_GOTO_FINAL_CONVERSATION+32:
       {
       Entity *vg = world_find_first(world, ENTITY_VOMIT_GIRL);
-      if (vg && vg->color.data[3] > 0) {
-        move_to(&vg->color.data[3], 0, app_delta() / 0.5f);
+      if (vg && vg->color.w > 0) {
+        move_to(&vg->color.w, 0, app_delta() / 0.5f);
         return;
       }
       else {
@@ -2476,7 +2475,7 @@ Entity *world_find(World *world, int id) {
 Entity *world_add(World *world, int type) {
   Entity *en = make_entity(type);
   en->id = ++world->max_id;
-  arrput(world->entities, en);
+  arrpush(world->entities, en);
   return en;
 }
 Entity *world_add_at (World *world, int type, int x, int y) {
@@ -2511,7 +2510,7 @@ void world_add_texture (World *world, const char *path, int x, int y){
 static void world_add_ambient_sound(World *world, const char *file) {
   Audio_Source *src = load_audio_source(file);
   if (src) {
-    arrput(world->ambient_audio_list, src);
+    arrpush(world->ambient_audio_list, src);
     aud_set_volume(src, ambient_current_volume);
     aud_set_source_looped(src, true);
     aud_play(src);
@@ -2816,9 +2815,9 @@ void scene_train_home(World *world) {
   //world->ambient.data[1] *= 2;
   //world->ambient.data[0] *= 2;
 
-  world->ambient.data[0] += 106.f / 255.f;
-  world->ambient.data[1] += 62.f / 255.f;
-  world->ambient.data[2] += 26.f / 255.f;
+  world->ambient.x += 106.f / 255.f;
+  world->ambient.y +=  62.f / 255.f;
+  world->ambient.z +=  26.f / 255.f;
 
   add_train_bg_impl(world, 0);
 

@@ -235,9 +235,10 @@ void gfx_unset_scissor(void) {
 }
 
 static Texture gfx_make_texture_impl(const void *data, int width, int height) {
-  GLuint handle = 0;
-  glGenTextures(1, &handle);
-  glBindTexture(GL_TEXTURE_2D, handle);
+  Texture t = {.handle = 0, .width = width, .height = height};
+  
+  glGenTextures(1, &t.handle);
+  glBindTexture(GL_TEXTURE_2D, t.handle);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -245,10 +246,7 @@ static Texture gfx_make_texture_impl(const void *data, int width, int height) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  Texture t = {0};
-  t.handle = handle;
-  t.width = width;
-  t.height = height;
+
   return t;
 }
 

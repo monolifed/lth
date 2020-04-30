@@ -76,15 +76,15 @@ enum {
 typedef struct Entity Entity;
 typedef void On_Use(Entity *en);
 
-#define ENTITY_BASE union { Entity; Entity base; }
+// #define ENTITY_BASE union { Entity; Entity base; }
 struct Entity {
   int id;
   int state;
   int type;
   int facing;
-  union { Vec2 pos; struct {float x,y;}; };
-  union { Vec2 last_pos; struct {float last_x,last_y;}; };
-  union { Vec2 size; struct {float width,height;}; };
+  float x, y;
+  float last_x,last_y;
+  float width, height;
   Texture *texture;
   Sprite *sprite;
   Vec4 color;

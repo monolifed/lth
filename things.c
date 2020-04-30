@@ -257,9 +257,9 @@ void light_proc(Entity *en, int action) {
         en->y = y - en->height / 2;
       }
 
-      en->color.data[0] = 143.f / 255.f;
-      en->color.data[1] = 123.f / 255.f;
-      en->color.data[2] = 84.f / 255.f;
+      en->color.x = 143.f / 255.f;
+      en->color.y = 123.f / 255.f;
+      en->color.z =  84.f / 255.f;
 
       if (flashlight_on && player) {
         en->color.w = 1;

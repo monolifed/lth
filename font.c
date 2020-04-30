@@ -24,13 +24,11 @@ void font_load_image(Font *font, const unsigned char *pixels, int w, int h, cons
 
     if (r == 255 && g == 0 && b == 255 && a == 255) {
       if (c) {
-        Font_Glyph g = {0};
-        g.code = *c;
-        g.quad[0] = (float)last_left+1;
-        g.quad[1] = 1;
-        g.quad[2] = (float)x - (float)last_left - 1;
-        g.quad[3] = (float)h-1;
-        arrput(font->glyphs, g);
+        Font_Glyph g = {
+			.code = *c,
+			.quad = {last_left + 1, 1, x - last_left - 1, h - 1}
+		};
+        arrpush(font->glyphs, g);
         c++;
       }
       else {

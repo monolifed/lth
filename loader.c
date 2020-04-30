@@ -46,10 +46,7 @@ void init_loader(void) {
     mz_zip_archive_file_stat stats = {0};
     mz_zip_reader_file_stat(zip, i, &stats);
 
-    Zipped_File file = {0};
-    file.path = buf;
-    file.index = i;
-    file.size = stats.m_uncomp_size;
+    Zipped_File file = {.path = buf, .size = stats.m_uncomp_size, .index = i};
     arrpush(zip_files_, file);
   }
 }

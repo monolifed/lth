@@ -131,21 +131,13 @@ bool sprite_is_playing(Sprite *sprite, const char *name) {
   return sprite->cur_anim && !strcmp(sprite->cur_anim->name, name);
 }
 
-void sprite_add_frame(Sprite *sprite, float quad[4], float duration) {
-  Frame f = {0};
-  f.quad[0] = quad[0];
-  f.quad[1] = quad[1];
-  f.quad[2] = quad[2];
-  f.quad[3] = quad[3];
-  f.duration = duration;
+void sprite_add_frame(Sprite *sprite, float q[4], float duration) {
+  Frame f = {.quad = {q[0], q[1], q[2], q[3]}, .duration = duration};
   arrpush(sprite->frames, f);
 }
 
 void sprite_add_anim(Sprite *sprite, const char *name, int from, int to) {
-  Anim anim = {0};
-  anim.name = str_copy(name);
-  anim.from = from;
-  anim.to = to;
+  Anim anim = {.name = str_copy(name), .from = from, .to = to};
   for (int i = from; i <= to && arrlen(sprite->frames)-1; i++)
     anim.duration += sprite->frames[i].duration;
   arrpush(sprite->anims, anim);

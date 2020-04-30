@@ -20,7 +20,7 @@ typedef int32_t i32;
 typedef int16_t i16;
 typedef int8_t  i8;
 
-typedef size_t uintptr;
+typedef uint32_t uintptr;
 
 #ifndef min
 #define min(a, b) ((a)<(b)?(a):(b))
@@ -136,24 +136,15 @@ Texture *gfx_make_texture(const void *data, int width, int height);
 void gfx_delete_texture(Texture *texture);
 
 // Math
-typedef union Vec2_u {
-  struct { float x, y; };
-  float data[2];
-} Vec2;
+typedef struct {float x, y;} Vec2;
 inline Vec2 make2f(float x, float y) { Vec2 v = {.x = x, .y = y}; return v; }
 inline float size2f(Vec2 v) { return sqrtf(v.x*v.x + v.y*v.y); }
 inline Vec2 norm2f(Vec2 v) { float size = size2f(v); Vec2 r = {.x = v.x/size, .y = v.y/size }; return r; }
 inline Vec2 div2f(Vec2 v, Vec2 w) { Vec2 r = { .x = v.x/w.x, .y = v.y/w.y}; return r;}
 
-typedef union Vec3_u {
-  struct { float x, y, z; };
-  float data[3];
-} Vec3;
+typedef struct {float x, y, z; } Vec3;
 
-typedef union Vec4_u {
-  struct { float x, y, z, w; };
-  float data[4];
-} Vec4;
+typedef struct {float x, y, z, w;} Vec4;
 
 inline void set4f(Vec4 *v, float x, float y, float z, float w) {v->x = x; v->y = y; v->z = z; v->w = w;}
 inline void set3f(Vec3 *v, float x, float y, float z) {v->x = x; v->y = y; v->z = z;}
