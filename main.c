@@ -117,7 +117,7 @@ unsigned randomu() {
 }
 
 float get_wave(float period) {
-  return sin(app_time() * 3.1415926 * 2 / period) * 0.5f + 0.5f;
+  return sin(app_time() * M_PI * 2 / period) * 0.5f + 0.5f;
 }
 float get_wave_range(float period, float low, float high) {
   return low + get_wave(period) * (high - low);
@@ -1777,7 +1777,7 @@ void update_state(void) {
         "Can't go through here.",
         "This isn't the way to go.",
       };
-      u32 idx = randomu() % _countof(messages);
+      uint32_t idx = randomu() % _countof(messages);
       show_speech_for(ENTITY_PLAYER, messages[min(idx, _countof(messages)-1)]);
     } break;
 
@@ -2385,7 +2385,7 @@ void shake_camera(float mag) {
   total_magnitude = mag;
 }
 void apply_camera_impulse(float mag) {
-  float ang = randomf() * 2 * 3.1415926f;
+  float ang = randomf() * 2 * M_PI;
 #if 0
   camera_off.x = sinf(ang) * mag;
 #else
@@ -3127,7 +3127,7 @@ static void frame(void) {
 
         if (window_flash > 0) {
           float t = (1.f - window_flash);
-          t = cosf((t-0.5f) * 2 * 3.1415926f) * 0.5 + 0.5f;
+          t = cosf((t-0.5f) * 2 * M_PI) * 0.5 + 0.5f;
           t = 1;
 
           lighting_brightness = 1-t;

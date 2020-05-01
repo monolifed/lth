@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_SPRITE_H
+#define LTH_SPRITE_H
 
 #include <stdbool.h>
 
@@ -47,3 +48,4 @@ void sprite_add_anim(Sprite *sprite, const char *name, int from, int to);
 int sprite_num_frames(Sprite *sprite);
 bool sprite_entered_anim(Sprite *sprite, const char *name);
 
+#endif // LTH_SPRITE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_GAME_H
+#define LTH_GAME_H
 
 #include "core.h"
 #include "sprite.h"
@@ -224,3 +225,4 @@ void play_music(const char *path);
 
 void request_reset_game(void);
 
+#endif // LTH_GAME_H

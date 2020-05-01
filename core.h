@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_CORE_H
+#define LTH_CORE_H
 
 #include <stdbool.h>
 #include <string.h>
@@ -9,16 +10,6 @@
 #include <assert.h>
 
 // #define DEV_BUILD
-
-typedef uint64_t u64;
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t  u8;
-
-typedef int64_t i64;
-typedef int32_t i32;
-typedef int16_t i16;
-typedef int8_t  i8;
 
 typedef uint32_t uintptr;
 
@@ -32,6 +23,10 @@ typedef uint32_t uintptr;
 #define lerp(a, b, t) (a + t*(b-a))
 #ifndef _countof
 #define _countof(a) array_count(a)
+#endif
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264f
 #endif
 
 //==================== App ======================
@@ -91,17 +86,17 @@ enum {
 };
 
 typedef struct Shader {
-  uintptr handle;
+  unsigned handle;
 } Shader;
 
 typedef struct Texture {
-  uintptr handle;
+  unsigned handle;
   int width;
   int height;
 } Texture;
 
 typedef struct Canvas {
-  uintptr handle;
+  unsigned handle;
   int width;
   int height;
   Texture texture;
@@ -113,7 +108,7 @@ void gfx_line_trace(float x0, float y0, float x1, float y1);
 void gfx_set_color(float r, float g, float b, float a);
 void gfx_get_color(float out_color[4]);
 void gfx_imm_begin(void);
-void gfx_imm_vertex(float x, float y, float u, float v, u32 color);
+void gfx_imm_vertex(float x, float y, float u, float v, uint32_t color);
 void gfx_imm_end(void);
 void gfx_push(void);
 void gfx_pop(void);
@@ -157,4 +152,5 @@ int str_eq(const char *a, const char *b);
 int str_ends_with(const char *str, const char *sub);
 char *mprintf(const char *fmt, ...);
 
+#endif // LTH_CORE_H
 

@@ -18,7 +18,7 @@ static void matrix_scale(float t[16], float sx, float sy) {
   t[5] *= sy;
 }
 static void matrix_rotate(float t[16], float r) {
-  r = r / 180 * 3.1415926f;
+  r = r / 180 * M_PI;
   float Sin = sinf(r);
   float Cos = cosf(r);
   float t0 = t[0];
@@ -173,7 +173,7 @@ static void gfx_load_gl_functions(void)
 typedef struct Vertex {
   float pos[2];
   float uv[2];
-  u32 color;
+  uint32_t color;
 } Vertex;
 
 typedef struct Matrix4 {
@@ -212,12 +212,12 @@ void gfx_get_color(float out_color[4]) {
   out_color[3] = color[3];
 }
 
-u32 gfx_get_colori(void) {
+uint32_t gfx_get_colori(void) {
   return
-    ((u32)(color[3] * 255.0f) << 24) |
-    ((u32)(color[2] * 255.0f) << 16) |
-    ((u32)(color[1] * 255.0f) << 8 ) |
-    ((u32)(color[0] * 255.0f) << 0 );
+    ((uint32_t)(color[3] * 255.0f) << 24) |
+    ((uint32_t)(color[2] * 255.0f) << 16) |
+    ((uint32_t)(color[1] * 255.0f) << 8 ) |
+    ((uint32_t)(color[0] * 255.0f) << 0 );
 }
 
 void gfx_set_scissor(float x, float y, float w, float h) {
@@ -635,7 +635,7 @@ void gfx_load(void) {
 
   default_shader = gfx_make_shader(ps, sizeof(ps)-1);
 
-  u32 color = 0xffffffff;
+  uint32_t color = 0xffffffffU;
   dummy_texture = gfx_make_texture(&color, 1,1);
 
   gfx_set_shader(0);

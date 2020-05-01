@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_FONT_H
+#define LTH_FONT_H
 
 typedef struct Font_Glyph {
   int code;
@@ -19,3 +20,5 @@ int font_sub_width(Font *font, const char *text);
 void font_draw(Font *font, const char *text, float x, float y);
 char **font_format_lines(Font *font, const char *text, int limit);
 int find_next_line_break(Font *font, const char *text, int limit);
+
+#endif // LTH_FONT_H

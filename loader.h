@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_LOADER_H
+#define LTH_LOADER_H
 
 void init_loader(void);
 char *load_file(const char *path, int *size);
@@ -8,3 +9,4 @@ struct Font *load_image_font(const char *path, const char *characters, int spaci
 struct Audio_Source *load_audio_source(const char *path);
 struct Audio_Buffer *load_audio_buffer(const char *path);
 
+#endif // LTH_LOADER_H

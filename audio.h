@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LTH_AUDIO_H
+#define LTH_AUDIO_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -15,13 +16,13 @@ typedef struct Audio_Decoder {
 } Audio_Decoder;
 
 typedef struct Audio_Buffer {
-  size_t handle;
+  unsigned handle;
   int page_index;
   int ref_count;
 } Audio_Buffer;
 
 typedef struct Audio_Source {
-  size_t handle;
+  unsigned handle;
   Audio_Buffer *buffer;
   Audio_Decoder *decoder;
   bool fully_loaded;
@@ -39,3 +40,4 @@ Audio_Buffer *aud_make_buffer(const void *data, int size);
 bool aud_is_playing(Audio_Source *src);
 void aud_set_volume(Audio_Source *src, float volume);
 
+#endif // LTH_AUDIO_H
