@@ -15,7 +15,31 @@
 #include <assert.h>
 
 #define PAGE_CAPACITY (4096*2)
-#define AUDIO_NEW(T) ((T*)calloc(sizeof(T), 1))
+//#define AUDIO_NEW(T) ((T*)calloc(sizeof(T), 1))
+
+struct Audio_Decoder {
+  void *handle;
+  const void *memory;
+  int num_pages;
+  unsigned format;
+  int sample_rate;
+  int channels;
+  double duration;
+};
+
+struct Audio_Buffer {
+  ALuint handle;
+  //int page_index;
+  int ref_count;
+};
+
+struct Audio_Source {
+  ALuint handle;
+  Audio_Buffer *buffer;
+  Audio_Decoder *decoder;
+  bool fully_loaded;
+  Audio_Buffer buffers[5];
+};
 
 ALCdevice *device_;
 ALCcontext *context_;
@@ -203,9 +227,9 @@ static Audio_Buffer *make_buffer_from_vorbis(const void *data, int size) {
   //free(samples);
   stb_vorbis_close(decoder);
 
-  Audio_Buffer *buffer = AUDIO_NEW(Audio_Buffer);
-  buffer->handle = (size_t)handle;
-  buffer->ref_count++;
+  Audio_Buffer *buffer = calloc(1, sizeof *buffer);
+  buffer->handle = handle;
+  buffer->ref_count = 1;
   return buffer;
 }
 
@@ -228,9 +252,9 @@ Audio_Buffer *aud_make_buffer(const void *data, int size) {
   alGenBuffers(1, &handle);
   alBufferData(handle, al_format, samples, data_size_in_bytes, sample_rate);
 
-  Audio_Buffer *buffer = AUDIO_NEW(Audio_Buffer);
+  Audio_Buffer *buffer = calloc(1, sizeof *buffer);
   buffer->handle = handle;
-  buffer->ref_count++;
+  buffer->ref_count = 1;
   return buffer;
 }
 
@@ -242,14 +266,14 @@ void aud_load(void) {
 }
 
 void aud_set_source_looped(Audio_Source *src, bool looped) {
-  alSourcei((ALuint)src->handle, AL_LOOPING, looped ? 1 : 0);
+  alSourcei(src->handle, AL_LOOPING, looped ? 1 : 0);
 }
 
 void aud_play(Audio_Source *source) {
   ALint state = 0;
-  alGetSourcei((ALuint)source->handle, AL_SOURCE_STATE, &state);
+  alGetSourcei(source->handle, AL_SOURCE_STATE, &state);
   if (state != AL_PLAYING) {
-    alSourcePlay((ALuint)source->handle);
+    alSourcePlay(source->handle);
   }
 }
 
@@ -269,14 +293,12 @@ void aud_delete_source(Audio_Source *source) {
   for (unsigned i = 0; i < _countof(source->buffers); i++) {
     Audio_Buffer *buf = &source->buffers[i];
     if (buf->handle) {
-      ALuint buf_handle = (ALuint)buf->handle;
-      alDeleteBuffers(1, &buf_handle);
+      alDeleteBuffers(1, &buf->handle);
     }
   }
 
   if (source->handle) {
-    ALuint handle = (ALuint)source->handle;
-    alDeleteSources(1, &handle);
+    alDeleteSources(1, &source->handle);
   }
 
   if (source->buffer) {
@@ -291,8 +313,7 @@ void aud_release_buffer(Audio_Buffer *buffer) {
   assert(buffer->ref_count && "Buffer already destroyed.");
   buffer->ref_count--;
   if (buffer->ref_count <= 0) {
-    ALuint handle = (ALuint)buffer->handle;
-    alDeleteBuffers(1, &handle);
+    alDeleteBuffers(1, &buffer->handle);
     free(buffer);
   }
 }
@@ -312,23 +333,23 @@ Audio_Source *aud_make_source_from_buffer(Audio_Buffer *buffer) {
   alSourcef(handle, AL_PITCH, 1);
   alSourcef(handle, AL_GAIN, 1);
   assert(buffer && buffer->handle && "Buffer needs to be real");
-  alSourcei(handle, AL_BUFFER, (ALuint)buffer->handle);
-  Audio_Source *source = AUDIO_NEW(Audio_Source);
+  alSourcei(handle, AL_BUFFER, buffer->handle);
+  Audio_Source *source = calloc(1, sizeof *source);
   source->buffer = buffer;
   source->fully_loaded = true;
-  source->handle = (size_t)handle;
+  source->handle = handle;
   buffer->ref_count++;
   return source;
 }
 
 bool aud_is_playing(Audio_Source *src) {
   ALint state = 0;
-  alGetSourcei((ALuint)src->handle, AL_SOURCE_STATE, &state);
+  alGetSourcei(src->handle, AL_SOURCE_STATE, &state);
   return state == AL_PLAYING;
 }
 
 void aud_set_volume(Audio_Source *src, float volume) {
-  alSourcef((ALuint)src->handle, AL_GAIN, volume);
+  alSourcef(src->handle, AL_GAIN, volume);
 }
 
 #undef STB_VORBIS_HEADER_ONLY

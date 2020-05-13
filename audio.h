@@ -5,29 +5,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef struct Audio_Decoder {
-  void *handle;
-  const void *memory;
-  int num_pages;
-  unsigned format;
-  int sample_rate;
-  int channels;
-  double duration;
-} Audio_Decoder;
+typedef struct Audio_Decoder Audio_Decoder;
 
-typedef struct Audio_Buffer {
-  unsigned handle;
-  int page_index;
-  int ref_count;
-} Audio_Buffer;
+typedef struct Audio_Buffer Audio_Buffer;
 
-typedef struct Audio_Source {
-  unsigned handle;
-  Audio_Buffer *buffer;
-  Audio_Decoder *decoder;
-  bool fully_loaded;
-  Audio_Buffer buffers[5];
-} Audio_Source;
+typedef struct Audio_Source Audio_Source;
 
 void aud_load(void);
 Audio_Source *aud_make_source_from_buffer(Audio_Buffer *buf);
