@@ -183,7 +183,7 @@ static Audio_Buffer *make_buffer_from_vorbis(const void *data, int size) {
   if (al_format == AL_INVALID)
     return 0;
 
-  int16_t samples[total_samples * channels];
+  int16_t *samples = malloc(sizeof(int16_t) * total_samples * channels);
 
   const int page_capacity = PAGE_CAPACITY / channels;
 
@@ -224,7 +224,7 @@ static Audio_Buffer *make_buffer_from_vorbis(const void *data, int size) {
   alGenBuffers(1, &handle);
   alBufferData(handle, al_format, samples, channels * num_samples * (bits_per_sample / 8), sample_rate);
 
-  //free(samples);
+  free(samples);
   stb_vorbis_close(decoder);
 
   Audio_Buffer *buffer = calloc(1, sizeof *buffer);

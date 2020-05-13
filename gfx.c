@@ -273,11 +273,11 @@ static GLuint gfx_make_gl_shader(GLenum type, const char *src, int size) {
   if (!status) {
     GLint length = 0;
     glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length);
-    char buffer[length + 1];
-    GLsizei out_size = 0;
-    glGetShaderInfoLog(handle, sizeof buffer, &out_size, buffer);
+    char *buffer = malloc(length);
+    glGetShaderInfoLog(handle, length, NULL, buffer);
     printf("Failed to compile shader:\n%s\n", buffer);
     printf("%.*s\n", size, src);
+    free(buffer);
     glDeleteShader(handle);
     return 0;
   }
@@ -305,10 +305,10 @@ static Shader *gfx_make_shader_impl(const char *vs_src, int vs_size, const char 
       if (!status) {
         GLint length = 0;
         glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length);
-        char buffer[length + 1];
-        GLsizei out_size = 0;
-        glGetProgramInfoLog(handle, sizeof buffer, &out_size, buffer);
+        char *buffer = malloc(length);
+        glGetProgramInfoLog(handle, length, NULL, buffer);
         printf("%s\n", buffer);
+        free(buffer);
         glDeleteProgram(handle);
         handle = 0;
       }
