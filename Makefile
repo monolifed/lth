@@ -1,4 +1,4 @@
-CFLAGS:= -Wall -Wextra -pedantic -std=c99 -O2 -D_LARGEFILE64_SOURCE=1
+CFLAGS:= -Wall -Wextra -Wvla -pedantic -std=c99 -O2 -D_LARGEFILE64_SOURCE=1
 #CFLAGS= -std=c11 -O2 -DUSE_GLFW3
 
 OBJDIR:=obj
